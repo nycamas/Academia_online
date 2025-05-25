@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Academia Online{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Aprende a tu ritmo con Academia Online</h1>
+                <p class="lead mb-4">Plataforma educativa con cursos de calidad impartidos por profesionales. Accede a contenido exclusivo y mejora tus habilidades desde cualquier lugar.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{% url 'course_list' %}" class="btn btn-primary btn-lg px-4 me-md-2">Ver Cursos</a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-4">Registrarse</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://via.placeholder.com/600x400?text=Academia+Online" alt="Academia Online" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Cursos Destacados</h2>
+        <div class="row">
+            {% if courses %}
+                {% for course in courses %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/300x200?text=Curso+{{ forloop.counter }}" class="card-img-top" alt="{{ course.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text">{{ course.description|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Duración: {{ course.duration }}</small>
+                                <small class="text-muted">Profesor: {{ course.teacher.get_full_name|default:course.teacher.username }}</small>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-primary w-100">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>No hay cursos disponibles en este momento.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'course_list' %}" class="btn btn-outline-primary">Ver Todos los Cursos</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">¿Por qué elegirnos?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 h-100 bg-transparent">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-laptop-code fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Contenido de Calidad</h5>
+                        <p class="card-text">Cursos diseñados por expertos en cada área, con material actualizado y relevante.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 h-100 bg-transparent">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-clock fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Flexibilidad Horaria</h5>
+                        <p class="card-text">Estudia a tu propio ritmo, sin horarios fijos. Accede al contenido cuando mejor te convenga.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 h-100 bg-transparent">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-certificate fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Seguimiento Personalizado</h5>
+                        <p class="card-text">Evaluaciones continuas y feedback de los profesores para mejorar tu aprendizaje.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Lo que dicen nuestros estudiantes</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text">"Los cursos son excelentes, con contenido de calidad y profesores muy preparados. La plataforma es intuitiva y fácil de usar."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="Estudiante">
+                            <div>
+                                <h6 class="mb-0">María García</h6>
+                                <small class="text-muted">Estudiante de Desarrollo Web</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text">"Me ha encantado la flexibilidad que ofrece la plataforma. Puedo estudiar a mi ritmo y los profesores siempre están disponibles para resolver dudas."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="Estudiante">
+                            <div>
+                                <h6 class="mb-0">Carlos Rodríguez</h6>
+                                <small class="text-muted">Estudiante de Marketing Digital</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="card-text">"La calidad del contenido es excepcional. He aprendido mucho más de lo que esperaba y ya estoy aplicando los conocimientos en mi trabajo."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="https://via.placeholder.com/50x50" class="rounded-circle me-3" alt="Estudiante">
+                            <div>
+                                <h6 class="mb-0">Laura Martínez</h6>
+                                <small class="text-muted">Estudiante de Diseño Gráfico</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">¿Listo para comenzar tu aprendizaje?</h2>
+        <p class="lead mb-4">Únete a nuestra comunidad de estudiantes y transforma tu futuro con nuestros cursos.</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg">Registrarse Ahora</a>
+    </div>
+</section>
+{% endblock %}

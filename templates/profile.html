@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil - Academia Online{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Mi Perfil</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_first_name" class="form-label">Nombre</label>
+                                <input type="text" name="first_name" class="form-control" id="id_first_name" value="{{ form.first_name.value|default:'' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_last_name" class="form-label">Apellidos</label>
+                                <input type="text" name="last_name" class="form-control" id="id_last_name" value="{{ form.last_name.value|default:'' }}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Correo electrónico</label>
+                            <input type="email" name="email" class="form-control" id="id_email" value="{{ form.email.value|default:'' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
+                            <p><strong>Tipo de usuario:</strong> 
+                                {% if user.is_teacher %}
+                                    Profesor
+                                {% else %}
+                                    Alumno
+                                {% endif %}
+                            </p>
+                            <p><strong>Fecha de registro:</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

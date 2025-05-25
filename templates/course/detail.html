@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - Academia Online{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>{{ course.title }}</h1>
+            <p class="lead">{{ course.description }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if user.is_authenticated %}
+                {% if is_enrolled %}
+                    <span class="badge bg-success p-2 mb-2 d-block">Ya estás inscrito en este curso</span>
+                {% elif user.is_student %}
+                    <a href="{% url 'enroll' course.id %}" class="btn btn-primary btn-lg">Inscribirse</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary">Inicia sesión para inscribirte</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Detalles del Curso</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Profesor:</strong> {{ course.teacher.get_full_name|default:course.teacher.username }}</p>
+                            <p><strong>Duración:</strong> {{ course.duration }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Fecha de creación:</strong> {{ course.created_at|date:"d/m/Y" }}</p>
+                            <p><strong>Estudiantes inscritos:</strong> {{ course.enrollments.count }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lecciones</h5>
+                    {% if user.is_authenticated and course.teacher == user %}
+                    <a href="{% url 'lesson_create' course.id %}" class="btn btn-sm btn-primary">Añadir Lección</a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if lessons %}
+                    <div class="list-group">
+                        {% for lesson in lessons %}
+                        <a href="{% url 'lesson_detail' lesson.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ lesson.title }}</h5>
+                                {% if lesson.video_url %}
+                                <span class="badge bg-info text-white">Video</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center py-3">No hay lecciones disponibles para este curso.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Evaluaciones</h5>
+                    {% if user.is_authenticated and course.teacher == user %}
+                    <a href="{% url 'evaluation_create' course.id %}" class="btn btn-sm btn-primary">Añadir Evaluación</a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if evaluations %}
+                    <div class="list-group">
+                        {% for evaluation in evaluations %}
+                        <a href="{% url 'evaluation_detail' evaluation.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ evaluation.title }}</h5>
+                                <small>Fecha límite: {{ evaluation.due_date|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            <p class="mb-1">{{ evaluation.description|truncatewords:20 }}</p>
+                            <small>Puntuación máxima: {{ evaluation.max_score }}</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center py-3">No hay evaluaciones disponibles para este curso.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Acciones</h5>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                        {% if course.teacher == user %}
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'course_edit' course.id %}" class="btn btn-outline-primary">Editar Curso</a>
+                            <a href="{% url 'lesson_create' course.id %}" class="btn btn-outline-success">Añadir Lección</a>
+                            <a href="{% url 'evaluation_create' course.id %}" class="btn btn-outline-info">Añadir Evaluación</a>
+                            <a href="{% url 'course_delete' course.id %}" class="btn btn-outline-danger">Eliminar Curso</a>
+                        </div>
+                        {% elif user.is_student %}
+                            {% if is_enrolled %}
+                            <div class="alert alert-success">
+                                <p class="mb-0">Ya estás inscrito en este curso.</p>
+                            </div>
+                            {% else %}
+                            <div class="d-grid">
+                                <a href="{% url 'enroll' course.id %}" class="btn btn-primary">Inscribirse en este Curso</a>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">Debes <a href="{% url 'login' %}">iniciar sesión</a> para inscribirte en este curso.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
